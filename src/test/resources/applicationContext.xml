@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+	http://www.springframework.org/schema/task
+	http://www.springframework.org/schema/task/spring-task-3.2.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util-3.2.xsd 
+	http://www.springframework.org/schema/tool 
+	http://www.springframework.org/schema/tool/spring-tool-3.2.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<description>Spring公共配置文件</description>
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource"
+		abstract="false" scope="singleton" lazy-init="false"
+		autowire="default">
+		<property name="basename">
+			<value>ErrorCodes</value>
+		</property>
+	</bean>
+
+	<!-- 使用注解注入conf中的值 -->
+    <bean id="propertyPlaceholderConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true" />   
+        <property name="locations">
+            <list>
+                <value>classpath:system.conf</value>
+            </list>
+        </property>
+        <!-- 设置编码格式 -->
+        <property name="fileEncoding" value="UTF-8"></property>
+    </bean>
+	
+	<!-- 导入所有spring配置文件 -->
+	<import resource="classpath*:spring-jms-base.xml"/>
+	<import resource="classpath*:spring-jms-sender.xml"/>
+	<import resource="classpath*:spring-jms-listener.xml"/>
+	<import resource="classpath*:spring-hessian-merchant-front.xml"/>
+
+	<!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入,多个路径用逗号分割 -->
+	<context:component-scan base-package="com.cmsz.payprod.merchant.action" />
+	<context:component-scan base-package="com.cmsz.payprod.merchant.service" />
+	<context:component-scan base-package="com.cmsz.xpay.framework.ftl" />
+	<context:component-scan base-package="com.cmsz.xpay.framework.util" />
+	<context:component-scan base-package="com.cmsz.xpay.framework.http" />
+	<context:component-scan base-package="com.cmsz.payprod.merchant.utils" /> 
+</beans>

@@ -1,0 +1,62 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                      http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1" metadata-complete="true">
+    <display-name>Archetype Created Web Application</display-name>
+
+    <!-- WebSocket 需要Servlet3.0 需要web.xml 3.0及以上，并要配置此 -->
+    <absolute-ordering />
+
+    <!-- 加载log4j的配置文件log4j.properties -->
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+    </context-param>
+
+    <!-- 设定刷新日志配置文件的时间间隔，这里设置为10s -->
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>10000</param-value>
+    </context-param>
+
+    <!-- 加载Spring框架中的log4j监听器Log4jConfigListener -->
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
+    <!-- 加载spring容器 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring/spring-*.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 配置springMVC需要加载的配置文件
+            spring-dao.xml,spring-service.xml,spring-web.xml
+            Mybatis - > spring -> springmvc
+         -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring/spring-*.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <!-- 默认匹配所有的请求 -->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- 为避免项目间冲突，定义唯一的 webAppRootKey -->
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>goodman</param-value>
+    </context-param>
+</web-app>
